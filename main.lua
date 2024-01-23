@@ -56,6 +56,12 @@ function love.draw()
     
 end
 
+-- Random Coordinate Jump
+function randomCoordinateJump()
+    target.x = math.random(target.radius, love.graphics.getWidth() - target.radius)
+    target.y = math.random(target.radius, love.graphics.getHeight() - target.radius)
+end
+
 -- Code for what happens when the mouse is pressed
 function love.mousepressed( x, y, button, istouch, presses )
     if button == 1 then
@@ -63,18 +69,15 @@ function love.mousepressed( x, y, button, istouch, presses )
         -- Outer Layer
         if mouseToTarget < target.radius and mouseToTarget >= target.radius * (2/3) then
             score = score + 1
-            target.x = math.random(target.radius, love.graphics.getWidth() - target.radius)
-            target.y = math.random(target.radius, love.graphics.getHeight() - target.radius)
+            randomCoordinateJump()
         -- Middle Layer
         elseif mouseToTarget < target.radius * (2/3) and mouseToTarget >= target.radius * (1/3) then
             score = score + 2
-            target.x = math.random(target.radius, love.graphics.getWidth() - target.radius)
-            target.y = math.random(target.radius, love.graphics.getHeight() - target.radius)
+            randomCoordinateJump()
         -- Inner Layer
         elseif mouseToTarget < target.radius * (1/3) then
             score = score + 3
-            target.x = math.random(target.radius, love.graphics.getWidth() - target.radius)
-            target.y = math.random(target.radius, love.graphics.getHeight() - target.radius)
+            randomCoordinateJump()
         end
     end
 end
@@ -82,3 +85,4 @@ end
 function distanceBetween(x1, y1, x2, y2)
     return math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
 end
+
