@@ -60,8 +60,19 @@ end
 function love.mousepressed( x, y, button, istouch, presses )
     if button == 1 then
         local mouseToTarget = distanceBetween(x, y, target.x, target.y)
-        if mouseToTarget < target.radius then
+        -- Outer Layer
+        if mouseToTarget < target.radius and mouseToTarget >= target.radius * (2/3) then
             score = score + 1
+            target.x = math.random(target.radius, love.graphics.getWidth() - target.radius)
+            target.y = math.random(target.radius, love.graphics.getHeight() - target.radius)
+        -- Middle Layer
+        elseif mouseToTarget < target.radius * (2/3) and mouseToTarget >= target.radius * (1/3) then
+            score = score + 2
+            target.x = math.random(target.radius, love.graphics.getWidth() - target.radius)
+            target.y = math.random(target.radius, love.graphics.getHeight() - target.radius)
+        -- Inner Layer
+        elseif mouseToTarget < target.radius * (1/3) then
+            score = score + 3
             target.x = math.random(target.radius, love.graphics.getWidth() - target.radius)
             target.y = math.random(target.radius, love.graphics.getHeight() - target.radius)
         end
