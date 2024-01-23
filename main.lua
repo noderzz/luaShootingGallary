@@ -11,6 +11,15 @@ function love.load()
 
     -- Game Fonts
     gameFont = love.graphics.newFont(40)
+
+    -- Sprites
+    sprites = {}
+    sprites.sky = love.graphics.newImage('sprites/sky.png')
+    sprites.target = love.graphics.newImage('sprites/target.png')
+    sprites.crosshairs = love.graphics.newImage('sprites/crosshairs.png')
+
+    -- Make mouse invisible
+    love.mouse.setVisible(false)
 end
 
 function love.update(dt)
@@ -24,6 +33,9 @@ function love.update(dt)
 end
 
 function love.draw()
+    -- Draw Background
+    love.graphics.draw(sprites.sky, 0, 0)
+
     -- Draw Circle
     love.graphics.setColor(1,0,0)
     love.graphics.circle("fill", target.x, target.y, target.radius)
@@ -37,6 +49,11 @@ function love.draw()
     love.graphics.setFont(gameFont)
     love.graphics.setColor(1,1,1)
     love.graphics.print(math.ceil(timer), love.graphics.getWidth() / 2, 0)
+
+    -- Add Graphics
+    love.graphics.draw(sprites.target, target.x - target.radius, target.y - target.radius)
+    love.graphics.draw(sprites.crosshairs, love.mouse.getX() - 20, love.mouse.getY() - 20)
+    
 end
 
 -- Code for what happens when the mouse is pressed
