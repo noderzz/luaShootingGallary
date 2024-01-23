@@ -7,7 +7,8 @@ function love.load()
 
     -- Game Values
     score = 0
-    timer = 10
+    timer = 0
+    gameState = 1
 
     -- Game Fonts
     gameFont = love.graphics.newFont(40)
@@ -20,6 +21,7 @@ function love.load()
 
     -- Make mouse invisible
     love.mouse.setVisible(false)
+    test_bool = false
 end
 
 function love.update(dt)
@@ -29,6 +31,8 @@ function love.update(dt)
     end
     if timer < 0 then
         timer = 0
+        gameState = 1
+        score = 0
     end
 end
 
@@ -37,8 +41,8 @@ function love.draw()
     love.graphics.draw(sprites.sky, 0, 0)
 
     -- Draw Circle
-    love.graphics.setColor(1,0,0)
-    love.graphics.circle("fill", target.x, target.y, target.radius)
+    -- love.graphics.setColor(1,0,0)
+    -- love.graphics.circle("fill", target.x, target.y, target.radius)
 
     -- Draw Score
     love.graphics.setFont(gameFont)
@@ -51,7 +55,9 @@ function love.draw()
     love.graphics.print(math.ceil(timer), love.graphics.getWidth() / 2, 0)
 
     -- Add Graphics
-    love.graphics.draw(sprites.target, target.x - target.radius, target.y - target.radius)
+    if gameState == 2 then
+        love.graphics.draw(sprites.target, target.x - target.radius, target.y - target.radius)
+    end
     love.graphics.draw(sprites.crosshairs, love.mouse.getX() - 20, love.mouse.getY() - 20)
     
 end
@@ -67,7 +73,11 @@ function love.mousepressed( x, y, button, istouch, presses )
     if button == 1 then
         local mouseToTarget = distanceBetween(x, y, target.x, target.y)
         -- Outer Layer
-        if mouseToTarget < target.radius and mouseToTarget >= target.radius * (2/3) then
+        if gameState == 1 and button == 1 then
+            gameState = 2
+            timer = 10
+            randomCoordinateJump()
+        elseif mouseToTarget < target.radius and mouseToTarget >= target.radius * (2/3) then
             score = score + 1
             randomCoordinateJump()
         -- Middle Layer
