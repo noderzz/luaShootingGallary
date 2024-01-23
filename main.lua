@@ -9,6 +9,10 @@ function love.load()
     score = 0
     timer = 0
     gameState = 1
+    tryAgainState = 1
+    countdown = 0
+    triggerCountdown = 1
+    middleHeight = love.graphics.getHeight() / 2
 
     -- Game Fonts
     gameFont = love.graphics.newFont(40)
@@ -32,7 +36,22 @@ function love.update(dt)
     if timer < 0 then
         timer = 0
         gameState = 1
+        triggerCountdown = 3
     end
+
+    -- Pause Test
+    if countdown > 0 then
+        countdown = countdown - dt
+    end
+    if countdown < 0 then
+        countdown = 0
+        gameState = 2
+        timer = 10
+        score = 0
+        tryAgainState = 2
+        randomCoordinateJump()
+    end
+
 end
 
 function love.draw()
@@ -42,12 +61,25 @@ function love.draw()
     -- Draw Score
     love.graphics.setFont(gameFont)
     love.graphics.setColor(1,1,1)
-    love.graphics.print(score, 0, 0)
+    love.graphics.print("Score: " .. score, 5, 5)
 
     -- Draw Timer
     love.graphics.setFont(gameFont)
-    love.graphics.setColor(1,1,1)
-    love.graphics.print(math.ceil(timer), love.graphics.getWidth() / 2, 0)
+    
+    love.graphics.print("Time: " .. math.ceil(timer), love.graphics.getWidth() / 2, 5)
+    
+    if gameState == 1 and tryAgainState == 2 then
+        love.graphics.setColor(255/255, 87/255, 51/255)
+        love.graphics.printf("GAME OVER", 0, middleHeight - 40, love.graphics.getWidth(), "center")
+        love.graphics.setColor(1,1,1)
+        love.graphics.printf("YOUR SCORE: ".. score, 0, middleHeight, love.graphics.getWidth(), "center")
+        love.graphics.printf("Click anywhere to try again!", 0, middleHeight + 40, love.graphics.getWidth(), "center")
+        if countdown > 0 then
+            love.graphics.printf("Next Game In: " .. math.ceil(countdown), 0, middleHeight + 75, love.graphics.getWidth(), "center")
+        end
+    elseif gameState == 1 then
+        love.graphics.printf("Click anywhere to begin!", 0, love.graphics.getHeight() / 2, love.graphics.getWidth(), "center")
+    end
 
     -- Add Graphics
     if gameState == 2 then
@@ -65,13 +97,17 @@ end
 
 -- Code for what happens when the mouse is pressed
 function love.mousepressed( x, y, button, istouch, presses )
-    if button == 1 then
+    if button == 1 and countdown == 0 then
         local mouseToTarget = distanceBetween(x, y, target.x, target.y)
         -- Outer Layer
-        if gameState == 1 and button == 1 then
+        if gameState == 1 and button == 1 and triggerCountdown == 3 then
+            countdown = 3
+            triggerCountdown = 1
+        elseif gameState == 1 and button == 1 and triggerCountdown == 1 then
             gameState = 2
             timer = 10
             score = 0
+            tryAgainState = 2
             randomCoordinateJump()
         elseif mouseToTarget < target.radius and mouseToTarget >= target.radius * (2/3) then
             score = score + 1
