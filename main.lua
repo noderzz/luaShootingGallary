@@ -32,17 +32,12 @@ function love.update(dt)
     if timer < 0 then
         timer = 0
         gameState = 1
-        score = 0
     end
 end
 
 function love.draw()
     -- Draw Background
     love.graphics.draw(sprites.sky, 0, 0)
-
-    -- Draw Circle
-    -- love.graphics.setColor(1,0,0)
-    -- love.graphics.circle("fill", target.x, target.y, target.radius)
 
     -- Draw Score
     love.graphics.setFont(gameFont)
@@ -76,6 +71,7 @@ function love.mousepressed( x, y, button, istouch, presses )
         if gameState == 1 and button == 1 then
             gameState = 2
             timer = 10
+            score = 0
             randomCoordinateJump()
         elseif mouseToTarget < target.radius and mouseToTarget >= target.radius * (2/3) then
             score = score + 1
