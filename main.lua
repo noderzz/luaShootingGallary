@@ -26,6 +26,17 @@ function love.load()
     -- Make mouse invisible
     love.mouse.setVisible(false)
     test_bool = false
+
+    -- Particle Test
+    particleSystem = love.graphics.newParticleSystem(love.graphics.newImage("sprites/smoke.png"), 3)
+    particleSystem:setPosition(0, 0)
+    particleSystem:setParticleLifetime(.1, 1) -- Particles live at least 1 second and at most 5 seconds
+    particleSystem:setSizeVariation(1)
+    particleSystem:setLinearAcceleration(-100, -100, 100, 100) -- Acceleration in pixels per second^2
+    particleSystem:setColors(255, 200, 155, 100, 50, 20, 10, 0) -- Fade from white to transparent
+    particleSystem:setSizes(.1, .5)
+    particleSystem:setRotation(0, 2 * math.pi)
+
 end
 
 function love.update(dt)
@@ -51,6 +62,8 @@ function love.update(dt)
         tryAgainState = 2
         randomCoordinateJump()
     end
+
+    particleSystem:update(dt)
 
 end
 
@@ -86,6 +99,7 @@ function love.draw()
         love.graphics.draw(sprites.target, target.x - target.radius, target.y - target.radius)
     end
     love.graphics.draw(sprites.crosshairs, love.mouse.getX() - 20, love.mouse.getY() - 20)
+    love.graphics.draw(particleSystem, 0, 0)
     
 end
 
@@ -109,15 +123,19 @@ function love.mousepressed( x, y, button, istouch, presses )
             score = 0
             tryAgainState = 2
             randomCoordinateJump()
+        -- Outer Layer
         elseif mouseToTarget < target.radius and mouseToTarget >= target.radius * (2/3) then
+            callParticles(x,y)
             score = score + 1
             randomCoordinateJump()
         -- Middle Layer
         elseif mouseToTarget < target.radius * (2/3) and mouseToTarget >= target.radius * (1/3) then
+            callParticles(x,y)
             score = score + 2
             randomCoordinateJump()
         -- Inner Layer
         elseif mouseToTarget < target.radius * (1/3) then
+            callParticles(x,y)
             score = score + 3
             randomCoordinateJump()
         end
@@ -128,3 +146,7 @@ function distanceBetween(x1, y1, x2, y2)
     return math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
 end
 
+function callParticles(x,y)
+    particleSystem:setPosition(x, y)
+    particleSystem:emit(30)
+end
