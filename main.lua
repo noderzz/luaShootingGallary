@@ -138,6 +138,10 @@ function love.mousepressed( x, y, button, istouch, presses )
             callParticles(x,y)
             score = score + 3
             randomCoordinateJump()
+        elseif mouseToTarget > target.radius then
+            if score > 0 then
+                score = score - 1
+            end
         end
     end
 end
